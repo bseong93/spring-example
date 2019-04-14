@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+		<security:http auto-config="true" use-expressions="true">			
+			<security:intercept-url pattern="/boardWrite" access="isAuthenticated()"/>
+			<security:intercept-url pattern="/boardDelete" access="isAuthenticated()"/>
+			<security:intercept-url pattern="/loginForm" access="isAnonymous()"/>
+			<security:intercept-url pattern="/**" access="permitAll"/>
+			
+			<security:form-login 
+			login-page="/loginForm"
+			default-target-url="/boardList"
+			username-parameter="userId"
+			password-parameter="userPw"
+			/>
+			
+			<security:logout
+			logout-url="/logout"
+			logout-success-url="/boardList"
+			invalidate-session="true"
+			/>
+			
+			<security:csrf/>
+			
+		</security:http>
+		
+		<security:authentication-manager>
+			<security:authentication-provider user-service-ref="loginService"/>
+		</security:authentication-manager>
+		
+		<bean id="loginService" class="net.example.myapp.login.service.LoginServiceImpl"></bean>
+		<bean id="loginErrorHandler" class="net.example.myapp.login.service.LoginErrorHandler"></bean>
+		<bean id="loginSuccessHandler" class="net.example.myapp.login.service.LoginSuccessHandler"></bean>
+
+</beans>
